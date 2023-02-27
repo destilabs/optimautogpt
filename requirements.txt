@@ -1,0 +1,2 @@
+python-dotenv==0.21.1
+toolz==0.12.0
