@@ -1,9 +1,43 @@
 from collections import defaultdict
+from dataclasses import dataclass
 import json
+from typing import Dict
 
 import requests
 
 from finetoolformer.constants import HF_API_URL_TEMPLATE, OPEN_AI_URL
+
+@dataclass
+class OpenAiResponse:
+    """OpenAI response object.
+    """
+    id: str
+    object: str
+    created: int
+    model: str
+    choices: list
+    usage: Dict[str, int]
+
+    def __post_init__(self):
+        self.choices = [OpenAiChoice(**choice) for choice in self.choices]
+
+@dataclass
+class OpenAiMessage:
+    """OpenAI message object.
+    """
+    role: str
+    content: str
+    
+@dataclass
+class OpenAiChoice:
+    """OpenAI choice object.
+    """
+    message: OpenAiMessage
+    finish_reason: str
+    index: int
+
+    def __post_init__(self):
+        self.message = OpenAiMessage(**self.message)
 
 
 def call_huggingface(payload="", parameters=None, options={"use_cache": False}, api_token="") -> str:
@@ -19,7 +53,7 @@ def call_huggingface(payload="", parameters=None, options={"use_cache": False}, 
     else:
         return response.json()
     
-def call_openai(parameters, api_token="") -> str:
+def call_openai(parameters, api_token="") -> OpenAiResponse:
     headers = {"Authorization": f"Bearer {api_token}", "Content-Type": "application/json"}
 
     response = requests.request("POST", OPEN_AI_URL, headers=headers, data=json.dumps(parameters))
@@ -28,4 +62,4 @@ def call_openai(parameters, api_token="") -> str:
     except requests.exceptions.HTTPError:
         raise requests.exceptions.HTTPError("Error:" + " ".join(response.json()["error"]))
     else:
-        return response.json()
+        return OpenAiResponse(**response.json())

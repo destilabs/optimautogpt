@@ -3,6 +3,7 @@ from typing import Any
 from finetoolformer.tasks.abstract_task import AbstractTask
 from finetoolformer.api import call_openai, call_huggingface
 from finetoolformer.tasks.task_type import TaskType
+from finetoolformer.tools import get_assistant_messages
 
 class QnATask(AbstractTask):
     def __init__(self) -> None:
@@ -28,29 +29,28 @@ class QnATask(AbstractTask):
         prompt = self.compile_task_prompt(inquiry)
 
         parameters = {
-            "model": "text-davinci-003",
-            "prompt": prompt,
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": prompt}],
             "max_tokens": 100,
-            "temperature": 0.5
+            "temperature": 1
         }
 
         text = call_openai(parameters, os.getenv("OPEN_AI_API_TOKEN"))
+        text = get_assistant_messages(text.choices)[0].message.content
 
-        return text["choices"][0]["text"]
+        return text
 
 
     def compile_task_prompt(self, prompt: str) -> str:
         prompt = self.task_prompt.replace(self.input_mask, prompt)
 
         parameters = {
-            "model": "text-davinci-003",
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": prompt}],
             "max_tokens": 200,
-            "temperature": 0.5,
-            "top_p": 1,
-            "best_of": 1,
-            "prompt": prompt,
+            "temperature": 1
         }
 
         task_prompt = call_openai(parameters, os.getenv("OPEN_AI_API_TOKEN"))
 
-        return task_prompt["choices"][0]["text"]
+        return task_prompt.choices[0].message.content

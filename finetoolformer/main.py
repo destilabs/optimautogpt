@@ -2,12 +2,15 @@
 import os
 import dotenv
 import requests
+import toolz as tz
 
 from finetoolformer.api import call_openai, call_huggingface
 from finetoolformer.tasks.task_type import TaskType
 from finetoolformer.tasks import get_task_by_description
+from finetoolformer.tools import get_assistant_messages
 
 dotenv.load_dotenv()
+
 
 def finetune(payload="", parameters=None, options={"use_cache": False}, api_token="") -> str:
     """Calling GPT-J-6B API to ask it to generate text from a prompt.
@@ -37,9 +40,14 @@ def main(inquiry):
     prompt = f"""
         Classify the problem below as one of the following product categories: ({' '.join(task_options)}):\n\n{inquiry}
     """
-    parameters = {"model": "text-davinci-003", "prompt": prompt, "temperature": 1, "max_tokens": int(longest_option_length * 1.4)}
+    parameters = {
+        "model": "gpt-3.5-turbo", 
+        "messages": [{"role": "user", "content": prompt}], 
+        "temperature": 1, "max_tokens": int(longest_option_length * 1.4)
+    }
 
-    text = call_openai(parameters, OPEN_AI_API_TOKEN)["choices"][0]["text"]
+    text = call_openai(parameters, OPEN_AI_API_TOKEN)
+    text = get_assistant_messages(text.choices)[0].message.content
 
     task = get_task_by_description(text.replace("\n", ""))()
     
