@@ -7,6 +7,9 @@ Framework for finetunning the ToolFormer-based LM in a few shots manner
 3. Call the API
 4. Concatenate everything to return to user;
 
+## Examples
+[Pipelines](https://github.com/theDestI/finetoolformer/blob/main/examples/pipeline.ipynb)
+
 ## Features
 - Zero-shot learning for the task of intent classification
 - Simple and intuitive integration for new API's
