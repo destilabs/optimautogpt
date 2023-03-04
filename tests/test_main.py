@@ -1,9 +1,9 @@
 import unittest
 
-from finetoolformer.main import main
+from finetoolformer.main import pipeline
 
 class TestFinetoolformer(unittest.TestCase):
     def test_main(self):
-        response = main("Who is Thierry Henry?")
+        response = pipeline("Who is Thierry Henry?")
 
         self.assertTrue("football" in response)

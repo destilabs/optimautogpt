@@ -1,5 +1,5 @@
 import toolz as tz
-from finetoolformer.api import OpenAiChoice, OpenAiMessage
+from finetoolformer.dto import OpenAiChoice, OpenAiMessage
 
 def get_assistant_messages(msgs:list[OpenAiChoice]) -> list[OpenAiMessage]:
     """
