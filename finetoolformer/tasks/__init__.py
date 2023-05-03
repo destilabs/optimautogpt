@@ -1,4 +1,6 @@
 from typing import Type
+
+from finetoolformer.tasks.grocery_task import GroceryTask
 from .qna_task import QnATask
 from .calculator_task import CalculatorTask
 from .calendar_task import CalendarTask
@@ -8,7 +10,8 @@ def get_task_by_description(description: str) -> Type[AbstractTask]:
     config = {
         "Question and Answering": QnATask,
         "Calculator": CalculatorTask,
-        "Calendar": CalendarTask
+        "Calendar": CalendarTask,
+        "Grocery": GroceryTask
     }
 
     try:

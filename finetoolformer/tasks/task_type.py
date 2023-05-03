@@ -6,3 +6,4 @@ class TaskType(enum.Enum):
     QNA = "Question and Answering"
     Calculator = "Calculator"
     Calendar = "Calendar"
+    Grocery = "Grocery"
