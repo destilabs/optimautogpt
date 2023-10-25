@@ -1,7 +1,7 @@
 python-dotenv==0.21.1
 toolz==0.12.0
 jupyter==1.0.0
-langchain==0.0.236
+langchain==0.0.317
 openai==0.27.6
 pandas==2.0.1
 yfinance==0.2.18
